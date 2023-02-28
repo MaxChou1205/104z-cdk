@@ -44,11 +44,19 @@ export class SelfPipelineStack extends cdk.Stack {
     codebuildProject.addToRolePolicy(
       new PolicyStatement({
         actions: [
-          "cloudformation:DescribeStacks",
+          // "cloudformation:DescribeStacks",
+          // "cloudformation:GetTemplate",
+          // "cloudformation:DeleteChangeSet",
+          // "cloudformation:CreateChangeSet",
+          // "cloudformation:DescribeChangeSet",
+          // "cloudformation:ExecuteChangeSet",
+          // "cloudformation:DescribeStackEvents",
+          "cloudformation:*",
           "ssm:GetParameter",
           "s3:*Object",
           "s3:ListBucket",
-          "s3:getBucketLocation"
+          "s3:getBucketLocation",
+          "iam:PassRole"
         ],
         resources: ["*"]
       })
