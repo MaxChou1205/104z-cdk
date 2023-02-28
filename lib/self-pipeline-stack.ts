@@ -28,6 +28,41 @@ export class SelfPipelineStack extends cdk.Stack {
     });
 
     const cdkBuildOutput = new codepipeline.Artifact("CdkBuildOutput");
+    const codebuildProject = new codebuild.PipelineProject(
+      this,
+      "CdkBuildProject",
+      {
+        environment: {
+          buildImage: codebuild.LinuxBuildImage.STANDARD_6_0,
+          computeType: codebuild.ComputeType.SMALL,
+          privileged: true
+        },
+        buildSpec: codebuild.BuildSpec.fromSourceFilename("buildspec.yml")
+      }
+    );
+    // codebuildProject.addToRolePolicy(
+    //   new PolicyStatement({
+    //     actions: [
+    //       "cloudfront:CreateInvalidation",
+    //       "cloudfront:GetInvalidation",
+    //       "cloudfront:ListInvalidations"
+    //     ],
+    //     resources: ["*"]
+    //   })
+    // );
+    // codebuildProject.addToRolePolicy(
+    //   new PolicyStatement({
+    //     actions: [
+    //       "s3:GetObject",
+    //       "s3:ListBucket",
+    //       "s3:ListObject",
+    //       "s3:GetObjectVersion",
+    //       "s3:PutObject",
+    //       "s3:DeleteObject"
+    //     ],
+    //     resources: ["*"]
+    //   })
+    // );
     pipeline.addStage({
       stageName: "Build",
       actions: [
@@ -35,12 +70,7 @@ export class SelfPipelineStack extends cdk.Stack {
           actionName: "CDK_Build",
           input: cdkSourceOutput,
           outputs: [cdkBuildOutput],
-          project: new codebuild.PipelineProject(this, "CdkBuildProject", {
-            environment: {
-              buildImage: codebuild.LinuxBuildImage.STANDARD_6_0
-            },
-            buildSpec: codebuild.BuildSpec.fromSourceFilename("buildspec.yml")
-          })
+          project: codebuildProject
         })
       ]
     });
