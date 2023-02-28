@@ -1,0 +1,14 @@
+version: 0.2
+
+phases:
+  post_build:
+    commands:
+      - npm install -g npm aws-cdk
+      - npm install
+      - cdk deploy fe-stack --require-approval never
+      - cdk deploy codepipeline-stack --require-approval never
+
+artifacts:
+  base-directory: cdk.out
+  files:
+    - "**/*"
