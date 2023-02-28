@@ -19,7 +19,7 @@ export class SelfPipelineStack extends cdk.Stack {
         new codepipeline_actions.GitHubSourceAction({
           actionName: "Pipeline_Source",
           owner: "MaxChou1205",
-          repo: "aws-cdk",
+          repo: "104z-cdk",
           branch: "master",
           oauthToken: cdk.SecretValue.secretsManager("github-pipeline-token"),
           output: cdkSourceOutput
