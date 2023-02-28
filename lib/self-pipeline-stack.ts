@@ -2,6 +2,7 @@ import * as cdk from "aws-cdk-lib";
 import * as codebuild from "aws-cdk-lib/aws-codebuild";
 import * as codepipeline from "aws-cdk-lib/aws-codepipeline";
 import * as codepipeline_actions from "aws-cdk-lib/aws-codepipeline-actions";
+import { PolicyStatement } from "aws-cdk-lib/aws-iam";
 
 export class SelfPipelineStack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
@@ -40,29 +41,12 @@ export class SelfPipelineStack extends cdk.Stack {
         buildSpec: codebuild.BuildSpec.fromSourceFilename("buildspec.yml")
       }
     );
-    // codebuildProject.addToRolePolicy(
-    //   new PolicyStatement({
-    //     actions: [
-    //       "cloudfront:CreateInvalidation",
-    //       "cloudfront:GetInvalidation",
-    //       "cloudfront:ListInvalidations"
-    //     ],
-    //     resources: ["*"]
-    //   })
-    // );
-    // codebuildProject.addToRolePolicy(
-    //   new PolicyStatement({
-    //     actions: [
-    //       "s3:GetObject",
-    //       "s3:ListBucket",
-    //       "s3:ListObject",
-    //       "s3:GetObjectVersion",
-    //       "s3:PutObject",
-    //       "s3:DeleteObject"
-    //     ],
-    //     resources: ["*"]
-    //   })
-    // );
+    codebuildProject.addToRolePolicy(
+      new PolicyStatement({
+        actions: ["cloudformation:DescribeStacks"],
+        resources: ["*"]
+      })
+    );
     pipeline.addStage({
       stageName: "Build",
       actions: [
